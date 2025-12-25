@@ -12,7 +12,7 @@ from textual.containers import Container, Horizontal, Middle
 from textual.screen import Screen
 from textual.widgets import Button, Label
 
-from ..util.credentials import save_token
+from ..util.credentials import save_token, get_token
 
 TITLE = r""" 
  _____      _ _____     _     _      
@@ -40,6 +40,10 @@ class WelcomeScreen(Screen[None]):
                     "An Airtable client for your terminal.\nSelecting continue will open a browser window for authentication."
                 ),
                 Button("Continue", id="continue"),
+                Label(
+                    "Made with <3 and :D by niko\nOpen Sourced at github.com/thesleepyniko/tuitable",
+                    id="love-text",
+                ),
                 id="welcome",
             ),
             Container(id="hatch-red"),
@@ -92,6 +96,10 @@ class AuthenticationInputScreen(Screen[bool]):
                     "A browser tab should've been opened. Once you are finished authenticating, return to TuiTable."
                 ),
                 Button("Back", id="back"),
+                Label(
+                    "Made with <3 and :D by niko\nOpen Sourced at github.com/thesleepyniko/tuitable",
+                    id="love-text",
+                ),
                 id="welcome",
             ),
             Container(id="hatch-red"),
@@ -136,14 +144,14 @@ class AuthenticationInputScreen(Screen[bool]):
                 response.raise_for_status()
             except httpx.HTTPStatusError:
                 self.notify(
-                    "TuiTable encountered an error containg Airtable. Try again in a few seconds."
+                    "TuiTable encountered an error contacting Airtable. Try again in a few seconds."
                 )
                 self.dismiss(False)
                 return web.Response(text="Token exchange failed", status=400)
             response = response.json()
             save_token(response.get("access_token"), "access")
             save_token(response.get("refresh_token"), "refresh")
-            self.dismiss(True)  
+            self.dismiss(True)
             return web.Response(text="Authorization successful", status=200)
 
     async def start_server(self):
@@ -170,6 +178,27 @@ class AuthenticationInputScreen(Screen[bool]):
         self.code_challenge = (
             base64.urlsafe_b64encode(challenge_bytes).decode("utf-8").rstrip("=")
         )
+        refresh_token = get_token(token_type="refresh")
+        if refresh_token and isinstance(refresh_token, str):
+            response = httpx.post(
+                "https://airtable.com/oauth2/v1/token",
+                headers={"Content-Type": "application/x-www-form-urlencoded"},
+                data={
+                    "grant_type": "refresh_token",
+                    "refresh_token": refresh_token,
+                    "client_id": self.client_id,
+                },
+            )
+            try:
+                response.raise_for_status()
+            except httpx.HTTPStatusError:
+                self.notify(
+                    "TuiTable encountered an error contacting Airtable. Try again in a few seconds."
+                )
+            response = response.json()
+            save_token(response.get("access_token"), "access")
+            save_token(response.get("refresh_token"), "refresh")
+            self.dismiss(True)
 
         self.params = {
             "state": self.state,
@@ -185,7 +214,7 @@ class AuthenticationInputScreen(Screen[bool]):
             "GET", "https://airtable.com/oauth2/v1/authorize", params=self.params
         )
 
-        webbrowser.open_new_tab(req.prepare().url) #type: ignore
+        webbrowser.open_new_tab(req.prepare().url)  # type: ignore
 
         await self.start_server()
 
@@ -197,6 +226,7 @@ class AuthenticationInputScreen(Screen[bool]):
             self.dismiss(True)
             event.stop()
 
+
 class FinishOnboarding(Screen[None]):
     def compose(self) -> ComposeResult:
         yield Horizontal(
@@ -205,17 +235,19 @@ class FinishOnboarding(Screen[None]):
                     TITLE,
                     classes="title",
                 ),
-                Label(
-                    "Welcome to TuiTable. Let's get started."
-                ),
+                Label("You're authenticated!\nWelcome to TuiTable. Let's get started."),
                 Button("Get Started", id="get-started", disabled=True),
+                Label(
+                    "Made with <3 and :D by niko\nOpen Sourced at github.com/thesleepyniko/tuitable",
+                    id="love-text",
+                ),
                 id="welcome",
             ),
             Container(id="hatch-red"),
             Container(id="hatch-yellow"),
             Container(id="hatch-blue"),
         )
-    
+
     def on_button_pressed(self, event: Button.Pressed):
         self.dismiss()
         event.stop()

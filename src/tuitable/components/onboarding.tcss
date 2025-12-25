@@ -35,6 +35,9 @@ Input {
     content-align: right middle;
 }
 
+#love-text {
+    text-style: italic;
+}
 
 .WelcomeScreen {
     

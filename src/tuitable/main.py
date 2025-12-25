@@ -33,7 +33,7 @@ class TuiTable(App):
             self.push_screen(WelcomeScreen(), self.on_welcome_complete)
         else:
             self.push_screen(FinishOnboarding(), self.on_start_tutorial)
-    
+
     def on_start_tutorial(self, result: None) -> None:
         pass
 

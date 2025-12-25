@@ -5,6 +5,7 @@ import yaml
 
 CONFIG_PATH = Path(platformdirs.user_config_dir("tuitable", "niko"))
 
+
 def init_config() -> None:
     if not Path.is_dir(CONFIG_PATH):
         Path.mkdir(CONFIG_PATH, exist_ok=True, parents=True)
@@ -12,9 +13,11 @@ def init_config() -> None:
     elif not Path.is_file(CONFIG_PATH / "config.yml"):
         Path.touch(CONFIG_PATH / "config.yml", exist_ok=True)
 
+
 def get_config() -> dict[str, Any]:
     with open(CONFIG_PATH / "config.yml", "r") as f:
         return yaml.safe_load(f)
+
 
 def set_value(category: str, name: str, value: Any) -> bool:
     try:
@@ -33,4 +36,3 @@ def set_value(category: str, name: str, value: Any) -> bool:
             return True
     except Exception as e:
         return False
-        
