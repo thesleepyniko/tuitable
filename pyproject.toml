@@ -6,6 +6,9 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "dotenv>=0.9.9",
+    "keyring>=25.7.0",
+    "platformdirs>=4.5.1",
+    "requests>=2.32.5",
     "textual>=6.11.0",
     "textual-dev>=1.8.0",
 ]

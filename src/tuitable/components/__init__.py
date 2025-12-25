@@ -1,3 +1,7 @@
-from .onboarding import WelcomeScreen, AuthenticationChoiceScreen
+from .onboarding import (
+    WelcomeScreen, 
+    AuthenticationChoiceScreen, 
+    AuthenticationInputScreen
+)
 
-__all__ = ["WelcomeScreen", "AuthenticationChoiceScreen"]
+__all__ = ["WelcomeScreen", "AuthenticationChoiceScreen", "AuthenticationInputScreen"]

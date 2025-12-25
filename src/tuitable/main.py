@@ -1,6 +1,6 @@
 from textual.app import App, ComposeResult
 from dotenv import load_dotenv
-from .components import WelcomeScreen, AuthenticationChoiceScreen
+from .components import WelcomeScreen, AuthenticationChoiceScreen, AuthenticationInputScreen
 
 from textual.screen import Screen
 from textual.app import ComposeResult
@@ -26,12 +26,16 @@ class TuiTable(App):
 
     def on_welcome_complete(self, result) -> None: # type: ignore
         """Called when WelcomeScreen is dismissed"""
-        self.push_screen(AuthenticationChoiceScreen(), self.on_auth_complete) # type: ignore
+        self.push_screen(AuthenticationChoiceScreen(), self.on_auth_choice_complete) # type: ignore
     
-    def on_auth_complete(self, result) -> None: # type: ignore
+    def on_auth_choice_complete(self, result) -> None: # type: ignore
         """Called when AuthenticationChoiceScreen is dismissed"""
         # Push next screen or start main app
-        pass
+        self.push_screen(AuthenticationInputScreen(), self.on_auth_entry_complete)
+
+    def on_auth_entry_complete(self, result: bool | None) -> None:
+        if result is False:
+            self.push_screen(AuthenticationChoiceScreen(), self.on_auth_choice_complete)
 
 def main():
     load_dotenv()
