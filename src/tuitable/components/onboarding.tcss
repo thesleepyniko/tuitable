@@ -1,0 +1,36 @@
+Label {
+    width: 100%;
+    margin: 2;
+    text-align: right;
+}
+
+Button {
+    margin: 0 2;
+    width: 1fr;
+}
+
+.title {
+    text-style: bold;
+}
+
+#hatch-red {
+    background: #ca2c41 75%;
+}
+
+#hatch-yellow {
+    background: #f5bd44 75%;
+}
+
+#hatch-blue {
+    background: #68c7fa 75%;
+}
+
+#welcome {
+    width: 50%;
+    content-align: right middle;
+}
+
+
+.WelcomeScreen {
+    
+}
