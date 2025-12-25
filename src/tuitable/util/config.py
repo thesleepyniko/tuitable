@@ -7,15 +7,30 @@ CONFIG_PATH = Path(platformdirs.user_config_dir("tuitable", "niko"))
 
 def init_config() -> None:
     if not Path.is_dir(CONFIG_PATH):
-        Path.mkdir(CONFIG_PATH, exist_ok= True, parents = True)
-        Path.touch(CONFIG_PATH / "config.yml", exist_ok = True)
+        Path.mkdir(CONFIG_PATH, exist_ok=True, parents=True)
+        Path.touch(CONFIG_PATH / "config.yml", exist_ok=True)
+    elif not Path.is_file(CONFIG_PATH / "config.yml"):
+        Path.touch(CONFIG_PATH / "config.yml", exist_ok=True)
 
-def update_value(category: str, name: str, value: Any) -> bool:
-    with open(CONFIG_PATH / "config.yml", 'r') as f:
-        result = yaml.safe_load(f)
-        temp_category = result.get(category, None)
-        if temp_category.get(name):
-            temp_category[name] = value
+def get_config() -> dict[str, Any]:
+    with open(CONFIG_PATH / "config.yml", "r") as f:
+        return yaml.safe_load(f)
+
+def set_value(category: str, name: str, value: Any) -> bool:
+    try:
+        with open(CONFIG_PATH / "config.yml", "r") as f:
+            config = yaml.safe_load(f)
+        if config.get(category, None):
+            config[category][name] = value
+            with open(CONFIG_PATH / "config.yml", "w") as f2:
+                yaml.safe_dump(config, f2)
             return True
-        else:
-            return False
+        elif config.get(category, None) is None:
+            config[category] = {}
+            config[category][name] = value
+            with open(CONFIG_PATH / "config.yml", "w") as f2:
+                yaml.safe_dump(config, f2)
+            return True
+    except Exception as e:
+        return False
+        
