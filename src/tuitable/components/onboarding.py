@@ -12,7 +12,7 @@ from textual.containers import Container, Horizontal, Middle
 from textual.screen import Screen
 from textual.widgets import Button, Label
 
-from ..util.credentials import save_token, get_token
+from ..util.credentials import save_token
 
 TITLE = r""" 
  _____      _ _____     _     _      
@@ -21,8 +21,32 @@ TITLE = r"""
   | || |_| | | | | (_| | |_) | |  __/
   |_| \__,_|_| |_|\__,_|_.__/|_|\___|"""
 
+class LoadingScreen(Screen[None]):
 
-class WelcomeScreen(Screen[None]):
+    CSS_PATH = "onboarding.tcss"
+
+    def compose(self) -> ComposeResult:
+        yield Horizontal(
+            Middle(
+                Label(
+                    TITLE,
+                    classes="title",
+                ),
+                Label(
+                    "Loading user info..."
+                ),
+                Label(
+                    "Made with <3 and :D by niko\nOpen Sourced at github.com/thesleepyniko/tuitable",
+                    id="love-text",
+                ),
+                id="welcome",
+            ),
+            Container(id="hatch-red"),
+            Container(id="hatch-yellow"),
+            Container(id="hatch-blue"),
+        )
+
+class WelcomeScreen(Screen[bool]):
     """
     Screen intended to be launched once upon intialization
     """
@@ -53,7 +77,7 @@ class WelcomeScreen(Screen[None]):
 
     def on_button_pressed(self, event: Button.Pressed):
         if event.button.id == "continue":
-            self.dismiss()
+            self.dismiss(False)
             event.stop()
 
 
@@ -178,27 +202,6 @@ class AuthenticationInputScreen(Screen[bool]):
         self.code_challenge = (
             base64.urlsafe_b64encode(challenge_bytes).decode("utf-8").rstrip("=")
         )
-        refresh_token = get_token(token_type="refresh")
-        if refresh_token and isinstance(refresh_token, str):
-            response = httpx.post(
-                "https://airtable.com/oauth2/v1/token",
-                headers={"Content-Type": "application/x-www-form-urlencoded"},
-                data={
-                    "grant_type": "refresh_token",
-                    "refresh_token": refresh_token,
-                    "client_id": self.client_id,
-                },
-            )
-            try:
-                response.raise_for_status()
-            except httpx.HTTPStatusError:
-                self.notify(
-                    "TuiTable encountered an error contacting Airtable. Try again in a few seconds."
-                )
-            response = response.json()
-            save_token(response.get("access_token"), "access")
-            save_token(response.get("refresh_token"), "refresh")
-            self.dismiss(True)
 
         self.params = {
             "state": self.state,
@@ -228,6 +231,9 @@ class AuthenticationInputScreen(Screen[bool]):
 
 
 class FinishOnboarding(Screen[None]):
+
+    CSS_PATH="onboarding.tcss"
+
     def compose(self) -> ComposeResult:
         yield Horizontal(
             Middle(
