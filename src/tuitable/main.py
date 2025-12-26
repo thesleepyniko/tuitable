@@ -5,7 +5,7 @@ from textual.containers import CenterMiddle
 from textual.screen import Screen
 from textual.widgets import Button, Label
 
-from .components import AuthenticationInputScreen, FinishOnboarding, WelcomeScreen, LoadingScreen
+from .components import AuthenticationInputScreen, FinishOnboarding, WelcomeScreen, LoadingScreen, OverviewScreen
 from .util.credentials import get_token, save_token
 
 # class WelcomeScreen(Screen):
@@ -47,7 +47,7 @@ class TuiTable(App):
                 save_token(response_data.get("access_token"), "access")
                 save_token(response_data.get("refresh_token"), "refresh")
             self.pop_screen()
-            await self.push_screen(FinishOnboarding(), self.on_welcome_complete)  # type: ignore
+            await self.push_screen(OverviewScreen(get_token()))  # type: ignore
             return
         self.pop_screen()
         self.push_screen(WelcomeScreen(), self.on_welcome_complete)
@@ -70,11 +70,5 @@ class TuiTable(App):
         pass
 
 
-def main():
-    load_dotenv()
-    app = TuiTable()
-    app.run()
-
-
-if __name__ == "__main__":
-    main()
+app = TuiTable()
+app.run()

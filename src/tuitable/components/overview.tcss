@@ -1,7 +1,7 @@
 Label {
     width: 100%;
-    margin: 2;
-    text-align: right;
+    margin: 1;
+    text-align: left;
 }
 
 Button {
@@ -14,31 +14,19 @@ Input {
     width: 1fr;
 }
 
-.title {
-    text-style: bold;
+#bases-container {
+    border: solid #68c7fa;
 }
 
-#hatch-red {
-    background: #ca2c41 75%;
+BaseWidget {
+    height: 25%;
+    padding: 0;
+    border: #f5bd44;
 }
 
-#hatch-yellow {
-    background: #f5bd44 75%;
-}
-
-#hatch-blue {
-    background: #68c7fa 75%;
-}
-
-#welcome {
-    width: 50%;
-    content-align: right middle;
-}
-
-#love-text {
-    text-style: italic;
-}
-
-.WelcomeScreen {
     
+BaseWidget CenterMiddle {
+    margin: 0;
+    padding: 0;
+    height: 100%;
 }
