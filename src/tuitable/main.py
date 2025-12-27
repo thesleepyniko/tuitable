@@ -69,6 +69,9 @@ class TuiTable(App):
     def on_start_tutorial(self, result: None) -> None:
         pass
 
+    def on_overview_dismiss(self, result: str | None):
+        ... # here, let's push the screen for the records
+
 
 app = TuiTable()
 app.run()

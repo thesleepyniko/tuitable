@@ -32,9 +32,9 @@ class BaseSelected(Message):
 class OverviewScreen(Screen[str]):
     CSS_PATH = "overview.tcss"
 
-    def __init__(self, token: str):
+    def __init__(self, base_id: str, token: str):
         self.token = token
-        self.bases = []
+        self.base_id = base_id
         super().__init__()
 
     def on_base_selected(self, message: BaseSelected):

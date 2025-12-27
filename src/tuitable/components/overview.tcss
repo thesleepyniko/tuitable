@@ -1,6 +1,7 @@
 Label {
     width: 100%;
-    margin: 1;
+    margin: 0;
+    padding: 0 0 1 1;
     text-align: left;
 }
 
@@ -19,14 +20,19 @@ Input {
 }
 
 BaseWidget {
-    height: 25%;
+    height: 5;
     padding: 0;
+    margin: 0;
     border: #f5bd44;
 }
 
-    
-BaseWidget CenterMiddle {
-    margin: 0;
+Vertical {
     padding: 0;
-    height: 100%;
+    margin: 0;
 }
+    
+# BaseWidget CenterMiddle {
+#     margin: 0;
+#     padding: 0;
+#     height: 100%;
+# }
